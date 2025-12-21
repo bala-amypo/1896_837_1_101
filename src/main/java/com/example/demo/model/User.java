@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "")
+@Table(name = "transport")
 public class User {
 
     @Id
