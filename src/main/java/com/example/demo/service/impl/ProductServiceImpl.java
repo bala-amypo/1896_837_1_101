@@ -33,4 +33,13 @@ public class ProductServiceImpl implements ProductService {
         return repo.save(product);
     }
 
-    
+     @Override
+    public Product getProduct(Long id) {
+        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return repo.findAll();
+    }
+}
