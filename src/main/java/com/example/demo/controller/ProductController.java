@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,17 +18,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product create(@RequestBody Product product) {
-        return service.createProduct(product);
+    public ResponseEntity<Product> create(@RequestBody Product product) {
+        return ResponseEntity.ok(service.createProduct(product));
     }
 
     @GetMapping
-    public List<Product> getAll() {
-        return service.getAllProducts();
+    public ResponseEntity<List<Product>> getAll() {
+        return ResponseEntity.ok(service.getAllProducts());
     }
 
     @GetMapping("/{id}")
-    public Product getById(@PathVariable Long id) {
-        return service.getProduct(id);
+    public ResponseEntity<Product> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getProduct(id));
     }
 }

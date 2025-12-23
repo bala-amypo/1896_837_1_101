@@ -16,57 +16,55 @@ import java.util.List;
 @Service
 public class StockRecordServiceImpl implements StockRecordService {
 
-    private final StockRecordRepository stockRepo;
-    private final ProductRepository productRepo;
-    private final WarehouseRepository warehouseRepo;
+    private final StockRecordRepository stockRecordRepository;
+    private final ProductRepository productRepository;
+    private final WarehouseRepository warehouseRepository;
 
-    public StockRecordServiceImpl(StockRecordRepository stockRepo,
-                                  ProductRepository productRepo,
-                                  WarehouseRepository warehouseRepo) {
-        this.stockRepo = stockRepo;
-        this.productRepo = productRepo;
-        this.warehouseRepo = warehouseRepo;
+    public StockRecordServiceImpl(StockRecordRepository stockRecordRepository,
+                                  ProductRepository productRepository,
+                                  WarehouseRepository warehouseRepository) {
+        this.stockRecordRepository = stockRecordRepository;
+        this.productRepository = productRepository;
+        this.warehouseRepository = warehouseRepository;
     }
 
     @Override
     public StockRecord createStockRecord(Long productId, Long warehouseId, StockRecord record) {
-        Product product = productRepo.findById(productId)
+        Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Warehouse warehouse = warehouseRepo.findById(warehouseId)
+        Warehouse warehouse = warehouseRepository.findById(warehouseId)
                 .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
 
-        // Duplicate check for (product, warehouse) pair
-        boolean exists = stockRepo.findByProductId(productId).stream()
-                .anyMatch(sr -> sr.getWarehouse() != null && sr.getWarehouse().getId().equals(warehouseId));
-        if (exists) {
-            throw new IllegalArgumentException("StockRecord already exists for given product and warehouse");
+        if (stockRecordRepository.existsByProductIdAndWarehouseId(productId, warehouseId)) {
+            throw new IllegalArgumentException("StockRecord already exists");
         }
 
         if (record.getCurrentQuantity() == null || record.getCurrentQuantity() < 0) {
-            throw new IllegalArgumentException("currentQuantity must be >= 0");
+            throw new IllegalArgumentException("currentQuantity must be greater than or equal to zero");
         }
         if (record.getReorderThreshold() == null || record.getReorderThreshold() <= 0) {
-            throw new IllegalArgumentException("reorderThreshold must be > 0");
+            throw new IllegalArgumentException("reorderThreshold must be greater than zero");
         }
 
         record.setProduct(product);
         record.setWarehouse(warehouse);
         record.setLastUpdated(LocalDateTime.now());
-        return stockRepo.save(record);
+        return stockRecordRepository.save(record);
     }
 
     @Override
     public StockRecord getStockRecord(Long id) {
-        return stockRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
+        return stockRecordRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
     }
 
     @Override
     public List<StockRecord> getRecordsBy_product(Long productId) {
-        return stockRepo.findByProductId(productId);
+        return stockRecordRepository.findByProductId(productId);
     }
 
     @Override
     public List<StockRecord> getRecordsByWarehouse(Long warehouseId) {
-        return stockRepo.findByWarehouseId(warehouseId);
+        return stockRecordRepository.findByWarehouseId(warehouseId);
     }
 }

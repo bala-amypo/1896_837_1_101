@@ -12,34 +12,35 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repo;
+    private final ProductRepository repository;
 
-    public ProductServiceImpl(ProductRepository repo) {
-        this.repo = repo;
+    public ProductServiceImpl(ProductRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public Product createProduct(Product product) {
-        if (product.getProductName() == null || product.getProductName().isBlank()) {
-            throw new IllegalArgumentException("Product name must not be blank");
+        if (product.getProductName() == null || product.getProductName().trim().isEmpty()) {
+            throw new IllegalArgumentException("productName must not be blank");
         }
-        if (product.getSku() == null || product.getSku().isBlank()) {
-            throw new IllegalArgumentException("SKU must not be blank");
+        if (product.getSku() == null || product.getSku().trim().isEmpty()) {
+            throw new IllegalArgumentException("sku must not be blank");
         }
-        repo.findBySku(product.getSku()).ifPresent(p -> {
-            throw new IllegalArgumentException("SKU must be unique");
+        repository.findBySku(product.getSku()).ifPresent(p -> {
+            throw new IllegalArgumentException("sku must be unique");
         });
         product.setCreatedAt(LocalDateTime.now());
-        return repo.save(product);
+        return repository.save(product);
     }
 
     @Override
     public Product getProduct(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
     public List<Product> getAllProducts() {
-        return repo.findAll();
+        return repository.findAll();
     }
 }

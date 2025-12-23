@@ -12,36 +12,37 @@ import java.util.List;
 @Service
 public class WarehouseServiceImpl implements WarehouseService {
 
-    private final WarehouseRepository repo;
+    private final WarehouseRepository repository;
 
-    public WarehouseServiceImpl(WarehouseRepository repo) {
-        this.repo = repo;
+    public WarehouseServiceImpl(WarehouseRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public Warehouse createWarehouse(Warehouse warehouse) {
-        if (warehouse.getWarehouseName() == null || warehouse.getWarehouseName().isBlank()) {
-            throw new IllegalArgumentException("Warehouse name must not be blank");
+        if (warehouse.getLocation() == null || warehouse.getLocation().trim().isEmpty()) {
+            throw new IllegalArgumentException("location must not be empty");
         }
-        if (warehouse.getLocation() == null || warehouse.getLocation().isBlank()) {
-            throw new IllegalArgumentException("Location must not be empty");
+        if (warehouse.getWarehouseName() == null || warehouse.getWarehouseName().trim().isEmpty()) {
+            throw new IllegalArgumentException("warehouseName must not be empty");
         }
-        repo.findByWarehouseName(warehouse.getWarehouseName()).ifPresent(w -> {
-            throw new IllegalArgumentException("Warehouse name must be unique");
+        repository.findByWarehouseName(warehouse.getWarehouseName()).ifPresent(w -> {
+            throw new IllegalArgumentException("warehouseName must be unique");
         });
         if (warehouse.getCreatedAt() == null) {
             warehouse.setCreatedAt(LocalDateTime.now());
         }
-        return repo.save(warehouse);
+        return repository.save(warehouse);
     }
 
     @Override
     public Warehouse getWarehouse(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
+        return repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
     }
 
     @Override
     public List<Warehouse> getAllWarehouses() {
-        return repo.findAll();
+        return repository.findAll();
     }
 }

@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.StockRecord;
 import com.example.demo.service.StockRecordService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,24 +18,24 @@ public class StockRecordController {
     }
 
     @PostMapping("/{productId}/{warehouseId}")
-    public StockRecord create(@PathVariable Long productId,
-                              @PathVariable Long warehouseId,
-                              @RequestBody StockRecord record) {
-        return service.createStockRecord(productId, warehouseId, record);
+    public ResponseEntity<StockRecord> create(@PathVariable Long productId,
+                                              @PathVariable Long warehouseId,
+                                              @RequestBody StockRecord record) {
+        return ResponseEntity.ok(service.createStockRecord(productId, warehouseId, record));
     }
 
     @GetMapping("/product/{productId}")
-    public List<StockRecord> getByProduct(@PathVariable Long productId) {
-        return service.getRecordsBy_product(productId);
+    public ResponseEntity<List<StockRecord>> byProduct(@PathVariable Long productId) {
+        return ResponseEntity.ok(service.getRecordsBy_product(productId));
     }
 
     @GetMapping("/warehouse/{warehouseId}")
-    public List<StockRecord> getByWarehouse(@PathVariable Long warehouseId) {
-        return service.getRecordsByWarehouse(warehouseId);
+    public ResponseEntity<List<StockRecord>> byWarehouse(@PathVariable Long warehouseId) {
+        return ResponseEntity.ok(service.getRecordsByWarehouse(warehouseId));
     }
 
     @GetMapping("/{id}")
-    public StockRecord getById(@PathVariable Long id) {
-        return service.getStockRecord(id);
+    public ResponseEntity<StockRecord> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getStockRecord(id));
     }
 }

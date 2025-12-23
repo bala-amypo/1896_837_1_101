@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Warehouse;
 import com.example.demo.service.WarehouseService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,17 +18,17 @@ public class WarehouseController {
     }
 
     @PostMapping
-    public Warehouse create(@RequestBody Warehouse warehouse) {
-        return service.createWarehouse(warehouse);
+    public ResponseEntity<Warehouse> create(@RequestBody Warehouse warehouse) {
+        return ResponseEntity.ok(service.createWarehouse(warehouse));
     }
 
     @GetMapping
-    public List<Warehouse> getAll() {
-        return service.getAllWarehouses();
+    public ResponseEntity<List<Warehouse>> getAll() {
+        return ResponseEntity.ok(service.getAllWarehouses());
     }
 
     @GetMapping("/{id}")
-    public Warehouse getById(@PathVariable Long id) {
-        return service.getWarehouse(id);
+    public ResponseEntity<Warehouse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getWarehouse(id));
     }
 }
