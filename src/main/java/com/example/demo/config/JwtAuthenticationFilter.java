@@ -1,61 +1,36 @@
-package com.example.demo.config;
+package com.example.demo.security;
 
-import com.example.demo.security.CustomUserDetails;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
-import org.springframework.web.filter.OncePerRequestFilter;
+import com.example.demo.model.User;
+import com.example.demo.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+/**
+ * CustomUserDetails acts as a UserDetailsService bean.
+ * It loads users from the database by email and wraps them
+ * into Spring Security's UserDetails.
+ */
+@Service
+public class CustomUserDetails implements UserDetailsService {
 
-@Component
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private final UserRepository userRepository;
 
-    private final JwtProvider jwtProvider;
-    private final CustomUserDetails userDetails;
-
-    public JwtAuthenticationFilter(JwtProvider jwtProvider,
-                                   CustomUserDetails userDetails) {
-        this.jwtProvider = jwtProvider;
-        this.userDetails = userDetails;
+    public CustomUserDetails(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain)
-            throws ServletException, IOException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-        String header = request.getHeader("Authorization");
-
-        if (header != null && header.startsWith("Bearer ")) {
-
-            String token = header.substring(7);
-
-            if (jwtProvider.validateToken(token)) {
-
-                String email = jwtProvider.getEmailFromToken(token);
-
-                var userDetails = userDetails.loadUserByUsername(email);
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
-
-                authentication.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-            }
-        }
-
-        filterChain.doFilter(request, response);
+        // Wrap your User entity into Spring Security's UserDetails
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(user.getRoles().stream().map(Enum::name).toArray(String[]::new))
+                .build();
     }
 }
