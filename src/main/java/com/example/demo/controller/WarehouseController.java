@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Warehouse;
 import com.example.demo.service.WarehouseService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,24 +10,24 @@ import java.util.List;
 @RequestMapping("/api/warehouses")
 public class WarehouseController {
 
-    private final WarehouseService service;
+    private final WarehouseService warehouseService;
 
-    public WarehouseController(WarehouseService service) {
-        this.service = service;
+    public WarehouseController(WarehouseService warehouseService) {
+        this.warehouseService = warehouseService;
     }
 
     @PostMapping
-    public ResponseEntity<Warehouse> create(@RequestBody Warehouse warehouse) {
-        return ResponseEntity.ok(service.createWarehouse(warehouse));
+    public Warehouse createWarehouse(@RequestBody Warehouse warehouse) {
+        return warehouseService.createWarehouse(warehouse);
     }
 
     @GetMapping
-    public ResponseEntity<List<Warehouse>> getAll() {
-        return ResponseEntity.ok(service.getAllWarehouses());
+    public List<Warehouse> getAllWarehouses() {
+        return warehouseService.getAllWarehouses();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Warehouse> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getWarehouse(id));
+    public Warehouse getWarehouse(@PathVariable String id) {
+        return warehouseService.getWarehouse(id);
     }
 }

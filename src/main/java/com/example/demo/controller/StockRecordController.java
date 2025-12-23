@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.StockRecord;
 import com.example.demo.service.StockRecordService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,31 +10,33 @@ import java.util.List;
 @RequestMapping("/api/stocks")
 public class StockRecordController {
 
-    private final StockRecordService service;
+    private final StockRecordService stockRecordService;
 
-    public StockRecordController(StockRecordService service) {
-        this.service = service;
+    public StockRecordController(StockRecordService stockRecordService) {
+        this.stockRecordService = stockRecordService;
     }
 
     @PostMapping("/{productId}/{warehouseId}")
-    public ResponseEntity<StockRecord> create(@PathVariable Long productId,
-                                              @PathVariable Long warehouseId,
-                                              @RequestBody StockRecord record) {
-        return ResponseEntity.ok(service.createStockRecord(productId, warehouseId, record));
-    }
+    public StockRecord createStockRecord(
+            @PathVariable String productId,
+            @PathVariable String warehouseId,
+            @RequestBody StockRecord record) {
 
-    @GetMapping("/product/{productId}")
-    public ResponseEntity<List<StockRecord>> byProduct(@PathVariable Long productId) {
-        return ResponseEntity.ok(service.getRecordsBy_product(productId));
-    }
-
-    @GetMapping("/warehouse/{warehouseId}")
-    public ResponseEntity<List<StockRecord>> byWarehouse(@PathVariable Long warehouseId) {
-        return ResponseEntity.ok(service.getRecordsByWarehouse(warehouseId));
+        return stockRecordService.createStockRecord(productId, warehouseId, record);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StockRecord> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getStockRecord(id));
+    public StockRecord getStockRecord(@PathVariable String id) {
+        return stockRecordService.getStockRecord(id);
+    }
+
+    @GetMapping("/product/{productId}")
+    public List<StockRecord> getByProduct(@PathVariable String productId) {
+        return stockRecordService.getRecordsBy_product(productId);
+    }
+
+    @GetMapping("/warehouse/{warehouseId}")
+    public List<StockRecord> getByWarehouse(@PathVariable String warehouseId) {
+        return stockRecordService.getRecordsByWarehouse(warehouseId);
     }
 }

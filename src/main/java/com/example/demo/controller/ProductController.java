@@ -2,7 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,35 +10,24 @@ import java.util.List;
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductService service;
+    private final ProductService productService;
 
-    public ProductController(ProductService service) {
-        this.service = service;
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
-        return ResponseEntity.ok(service.create(product));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> get(@PathVariable Long id) {
-        return ResponseEntity.ok(service.get(id));
+    public Product createProduct(@RequestBody Product product) {
+        return productService.createProduct(product);
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
-        return ResponseEntity.ok(service.update(id, product));
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable String id) {
+        return productService.getProduct(id);
     }
 }
