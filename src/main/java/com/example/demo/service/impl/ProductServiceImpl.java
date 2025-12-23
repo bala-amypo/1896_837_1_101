@@ -12,35 +12,40 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final ProductRepository repository;
+    private final ProductRepository repo;
 
-    public ProductServiceImpl(ProductRepository repository) {
-        this.repository = repository;
+    public ProductServiceImpl(ProductRepository repo) {
+        this.repo = repo;
     }
 
     @Override
-    public Product createProduct(Product product) {
-        if (product.getProductName() == null || product.getProductName().trim().isEmpty()) {
-            throw new IllegalArgumentException("productName must not be blank");
-        }
-        if (product.getSku() == null || product.getSku().trim().isEmpty()) {
-            throw new IllegalArgumentException("sku must not be blank");
-        }
-        repository.findBySku(product.getSku()).ifPresent(p -> {
-            throw new IllegalArgumentException("sku must be unique");
-        });
+    public Product create(Product product) {
         product.setCreatedAt(LocalDateTime.now());
-        return repository.save(product);
+        return repo.save(product);
     }
 
     @Override
-    public Product getProduct(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+    public Product get(Long id) {
+        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return repository.findAll();
+    public List<Product> getAll() {
+        return repo.findAll();
+    }
+
+    @Override
+    public Product update(Long id, Product product) {
+        Product existing = get(id);
+        existing.setProductName(product.getProductName());
+        existing.setSku(product.getSku());
+        existing.setCategory(product.getCategory());
+        return repo.save(existing);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Product existing = get(id);
+        repo.delete(existing);
     }
 }
