@@ -6,20 +6,26 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "warehouses")
-@Data
+@Table(name = "warehouses", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"warehouseName"})
+})
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Warehouse {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false, unique = true)
     private String warehouseName;
 
     @Column(nullable = false)
     private String location;
 
+    @Column(nullable = false)
     private LocalDateTime createdAt;
 }

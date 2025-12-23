@@ -7,17 +7,24 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "consumption_logs")
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConsumptionLog {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = false)
+    @JoinColumn(name = "stock_record_id", nullable = false)
     private StockRecord stockRecord;
 
+    @Column(nullable = false)
     private Integer consumedQuantity;
+
+    @Column(nullable = false)
     private LocalDate consumedDate;
 }
