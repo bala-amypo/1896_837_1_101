@@ -1,66 +1,36 @@
 package com.example.demo.security;
 
-import com.example.demo.model.Role;
 import com.example.demo.model.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import com.example.demo.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
+/**
+ * CustomUserDetails acts as a UserDetailsService bean.
+ * It loads users from the database by email and wraps them
+ * into Spring Security's UserDetails.
+ */
+@Service
+public class CustomUserDetails implements UserDetailsService {
 
-public class CustomUserDetails implements UserDetails {
+    private final UserRepository userRepository;
 
-    private final User user;
-
-    public CustomUserDetails(User user) {
-        this.user = user;
+    public CustomUserDetails(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        Set<Role> roles = user.getRoles();
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.name()))
-                .collect(Collectors.toSet());
-    }
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
 
-    @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return user.getEmail();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true; // customize if needed
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true; // customize if needed
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true; // customize if needed
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true; // customize if needed
-    }
-
-    public Long getId() {
-        return user.getId();
-    }
-
-    public String getName() {
-        return user.getName();
+        // Wrap your User entity into Spring Security's UserDetails
+        return org.springframework.security.core.userdetails.User
+                .withUsername(user.getEmail())
+                .password(user.getPassword())
+                .authorities(user.getRoles().stream().map(Enum::name).toArray(String[]::new))
+                .build();
     }
 }

@@ -1,36 +1,46 @@
-package com.example.demo.security;
+@Component
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+    private final JwtProvider jwtProvider;
+    private final CustomUserDetails customUserDetails;
 
-/**
- * CustomUserDetails acts as a UserDetailsService bean.
- * It loads users from the database by email and wraps them
- * into Spring Security's UserDetails.
- */
-@Service
-public class CustomUserDetails implements UserDetailsService {
-
-    private final UserRepository userRepository;
-
-    public CustomUserDetails(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public JwtAuthenticationFilter(JwtProvider jwtProvider,
+                                   CustomUserDetails customUserDetails) {
+        this.jwtProvider = jwtProvider;
+        this.customUserDetails = customUserDetails;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
 
-        // Wrap your User entity into Spring Security's UserDetails
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .authorities(user.getRoles().stream().map(Enum::name).toArray(String[]::new))
-                .build();
+        String header = request.getHeader("Authorization");
+
+        if (header != null && header.startsWith("Bearer ")) {
+            String token = header.substring(7);
+
+            if (jwtProvider.validateToken(token)) {
+                String email = jwtProvider.getEmailFromToken(token);
+
+                UserDetails loadedUser = customUserDetails.loadUserByUsername(email);
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                loadedUser,
+                                null,
+                                loadedUser.getAuthorities()
+                        );
+
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+
+        filterChain.doFilter(request, response);
     }
 }
