@@ -1,12 +1,12 @@
 package com.example.demo.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+
 import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
+@Builder
 public class AuthResponse {
     private String token;
     private Long userId;
