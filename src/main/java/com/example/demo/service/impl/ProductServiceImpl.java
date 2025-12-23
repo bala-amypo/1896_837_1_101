@@ -33,7 +33,7 @@ public class ProductServiceImpl implements ProductService {
         return repo.save(product);
     }
 
-     @Override
+    @Override
     public Product getProduct(Long id) {
         return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }

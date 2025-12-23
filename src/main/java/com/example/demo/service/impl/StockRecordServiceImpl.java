@@ -27,6 +27,7 @@ public class StockRecordServiceImpl implements StockRecordService {
         this.productRepo = productRepo;
         this.warehouseRepo = warehouseRepo;
     }
+
     @Override
     public StockRecord createStockRecord(Long productId, Long warehouseId, StockRecord record) {
         Product product = productRepo.findById(productId)

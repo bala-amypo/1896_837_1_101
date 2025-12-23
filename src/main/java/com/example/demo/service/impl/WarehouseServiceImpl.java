@@ -34,7 +34,8 @@ public class WarehouseServiceImpl implements WarehouseService {
         }
         return repo.save(warehouse);
     }
-        @Override
+
+    @Override
     public Warehouse getWarehouse(Long id) {
         return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
     }
@@ -44,4 +45,3 @@ public class WarehouseServiceImpl implements WarehouseService {
         return repo.findAll();
     }
 }
-
