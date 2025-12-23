@@ -1,21 +1,20 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "prediction_rules", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"ruleName"})
-})
-@Getter
-@Setter
-@Builder
+@Table(name = "prediction_rules", uniqueConstraints = @UniqueConstraint(columnNames = "ruleName"))
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class PredictionRule {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +25,9 @@ public class PredictionRule {
     @Column(nullable = false)
     private Integer averageDaysWindow;
 
-    @Column(nullable = false)
     private Integer minDailyUsage;
 
-    @Column(nullable = false)
     private Integer maxDailyUsage;
 
-    @Column(nullable = false)
     private LocalDateTime createdAt;
 }

@@ -1,30 +1,30 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "stock_records", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
-})
-@Getter
-@Setter
-@Builder
+@Table(name = "stock_records",
+       uniqueConstraints = @UniqueConstraint(columnNames = {"product_id", "warehouse_id"}))
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class StockRecord {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse;
 
@@ -34,6 +34,5 @@ public class StockRecord {
     @Column(nullable = false)
     private Integer reorderThreshold;
 
-    @Column(nullable = false)
     private LocalDateTime lastUpdated;
 }
