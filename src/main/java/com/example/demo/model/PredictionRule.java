@@ -7,25 +7,17 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "prediction_rules", uniqueConstraints = @UniqueConstraint(columnNames = "ruleName"))
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class PredictionRule {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue
     private Long id;
 
     @Column(nullable = false, unique = true)
     private String ruleName;
 
     private Integer averageDaysWindow;
-
     private Integer minDailyUsage;
-
     private Integer maxDailyUsage;
-
     private LocalDateTime createdAt;
 }
