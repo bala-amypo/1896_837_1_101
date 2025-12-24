@@ -1,20 +1,33 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.Warehouse;
+import com.example.demo.repository.WarehouseRepository;
+import com.example.demo.service.WarehouseService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Service
-@RequiredArgsConstructor
 public class WarehouseServiceImpl implements WarehouseService {
-    private final WarehouseRepository repo;
 
-    public Warehouse createWarehouse(Warehouse w) {
-        if (w.getLocation() == null || w.getLocation().isBlank())
-            throw new IllegalArgumentException("location required");
-        w.setCreatedAt(LocalDateTime.now());
-        return repo.save(w);
+    private final WarehouseRepository repository;
+
+    public WarehouseServiceImpl(WarehouseRepository repository) {
+        this.repository = repository;
     }
 
-    public Warehouse getWarehouse(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
+    @Override
+    public Warehouse create(Warehouse warehouse) {
+        return repository.save(warehouse);
     }
 
-    public List<Warehouse> getAllWarehouses() {
-        return repo.findAll();
+    @Override
+    public Warehouse getById(Long id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Warehouse> getAll() {
+        return repository.findAll();
     }
 }
