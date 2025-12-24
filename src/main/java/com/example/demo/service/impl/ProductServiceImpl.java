@@ -4,48 +4,33 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Service
+@Service("productServiceImpl")
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository repo;
 
-    public ProductServiceImpl(ProductRepository repo) {
-        this.repo = repo;
+    public Product createProduct(Product p) {
+        if (p.getProductName() == null || p.getProductName().isBlank())
+            throw new IllegalArgumentException("productName required");
+        repo.findBySku(p.getSku()).ifPresent(x -> {
+            throw new IllegalArgumentException("SKU exists");
+        });
+        p.setCreatedAt(LocalDateTime.now());
+        return repo.save(p);
     }
 
-    @Override
-    public Product create(Product product) {
-        product.setCreatedAt(LocalDateTime.now());
-        return repo.save(product);
-    }
-
-    @Override
-    public Product get(Long id) {
+    public Product getProduct(Long id) {
         return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
-    @Override
-    public List<Product> getAll() {
+    public List<Product> getAllProducts() {
         return repo.findAll();
-    }
-
-    @Override
-    public Product update(Long id, Product product) {
-        Product existing = get(id);
-        existing.setProductName(product.getProductName());
-        existing.setSku(product.getSku());
-        existing.setCategory(product.getCategory());
-        return repo.save(existing);
-    }
-
-    @Override
-    public void delete(Long id) {
-        Product existing = get(id);
-        repo.delete(existing);
     }
 }

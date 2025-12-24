@@ -2,41 +2,37 @@ package com.example.demo.controller;
 
 import com.example.demo.model.StockRecord;
 import com.example.demo.service.StockRecordService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/stocks")
+@RequiredArgsConstructor
 public class StockRecordController {
 
-    private final StockRecordService stockRecordService;
-
-    public StockRecordController(StockRecordService stockRecordService) {
-        this.stockRecordService = stockRecordService;
-    }
+    private final StockRecordService service;
 
     @PostMapping("/{productId}/{warehouseId}")
-    public StockRecord createStockRecord(
-            @PathVariable String productId,
-            @PathVariable String warehouseId,
-            @RequestBody StockRecord record) {
-
-        return stockRecordService.createStockRecord(productId, warehouseId, record);
+    public StockRecord create(@PathVariable Long productId,
+                              @PathVariable Long warehouseId,
+                              @RequestBody StockRecord r) {
+        return service.createStockRecord(productId, warehouseId, r);
     }
 
     @GetMapping("/{id}")
-    public StockRecord getStockRecord(@PathVariable String id) {
-        return stockRecordService.getStockRecord(id);
+    public StockRecord get(@PathVariable Long id) {
+        return service.getStockRecord(id);
     }
 
     @GetMapping("/product/{productId}")
-    public List<StockRecord> getByProduct(@PathVariable String productId) {
-        return stockRecordService.getRecordsBy_product(productId);
+    public List<StockRecord> byProduct(@PathVariable Long productId) {
+        return service.getRecordsBy_product(productId);
     }
 
     @GetMapping("/warehouse/{warehouseId}")
-    public List<StockRecord> getByWarehouse(@PathVariable String warehouseId) {
-        return stockRecordService.getRecordsByWarehouse(warehouseId);
+    public List<StockRecord> byWarehouse(@PathVariable Long warehouseId) {
+        return service.getRecordsByWarehouse(warehouseId);
     }
 }
