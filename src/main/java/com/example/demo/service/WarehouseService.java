@@ -5,9 +5,9 @@ import java.util.List;
 
 public interface WarehouseService {
 
-    Warehouse create(Warehouse warehouse);
+    Warehouse createWarehouse(Warehouse warehouse);
 
-    Warehouse getById(Long id);
+    List<Warehouse> getAllWarehouses();
 
-    List<Warehouse> getAll();
+    Warehouse getWarehouse(Long id);
 }

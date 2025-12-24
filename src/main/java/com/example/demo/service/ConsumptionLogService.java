@@ -4,6 +4,10 @@ import com.example.demo.model.ConsumptionLog;
 import java.util.List;
 
 public interface ConsumptionLogService {
-    ConsumptionLog create(ConsumptionLog log);
-    List<ConsumptionLog> getByStockRecord(Long stockRecordId);
+
+    ConsumptionLog logConsumption(Long stockRecordId, ConsumptionLog log);
+
+    List<ConsumptionLog> getLogsByStockRecord(Long stockRecordId);
+
+    ConsumptionLog getLog(Long id);
 }
