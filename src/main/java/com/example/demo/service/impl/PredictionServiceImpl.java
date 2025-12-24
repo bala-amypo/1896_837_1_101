@@ -1,23 +1,29 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.PredictionRule;
+import com.example.demo.repository.PredictionRuleRepository;
+import com.example.demo.service.PredictionService;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
-@RequiredArgsConstructor
 public class PredictionServiceImpl implements PredictionService {
 
     private final PredictionRuleRepository repo;
-    private final StockRecordRepository stockRepo;
 
-    public PredictionRule createRule(PredictionRule r) {
-        if (r.getAverageDaysWindow() <= 0 || r.getMinDailyUsage() > r.getMaxDailyUsage())
-            throw new IllegalArgumentException("Invalid rule");
-        r.setCreatedAt(LocalDateTime.now());
-        return repo.save(r);
+    public PredictionServiceImpl(PredictionRuleRepository repo) {
+        this.repo = repo;
     }
 
-    public List<PredictionRule> getAllRules() {
+    @Override
+    public PredictionRule create(PredictionRule rule) {
+        return repo.save(rule);
+    }
+
+    @Override
+    public List<PredictionRule> getActiveRules(LocalDate date) {
         return repo.findAll();
-    }
-
-    public LocalDate predictRestockDate(Long stockId) {
-        stockRepo.findById(stockId).orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
-        return LocalDate.now().plusDays(5);
     }
 }

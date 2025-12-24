@@ -1,35 +1,33 @@
+package com.example.demo.service.impl;
+
+import com.example.demo.model.StockRecord;
+import com.example.demo.repository.StockRecordRepository;
+import com.example.demo.service.StockRecordService;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Service
-@RequiredArgsConstructor
 public class StockRecordServiceImpl implements StockRecordService {
 
     private final StockRecordRepository repo;
-    private final ProductRepository productRepo;
-    private final WarehouseRepository warehouseRepo;
 
-    public StockRecord createStockRecord(Long productId, Long warehouseId, StockRecord r) {
-        Product p = productRepo.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Warehouse w = warehouseRepo.findById(warehouseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
-
-        repo.findByProductIdAndWarehouseId(productId, warehouseId)
-                .ifPresent(x -> { throw new IllegalArgumentException("StockRecord already exists"); });
-
-        r.setProduct(p);
-        r.setWarehouse(w);
-        r.setLastUpdated(LocalDateTime.now());
-        return repo.save(r);
+    public StockRecordServiceImpl(StockRecordRepository repo) {
+        this.repo = repo;
     }
 
-    public StockRecord getStockRecord(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
+    @Override
+    public StockRecord create(StockRecord record) {
+        return repo.save(record);
     }
 
-    public List<StockRecord> getRecordsBy_product(Long productId) {
+    @Override
+    public List<StockRecord> getAll() {
+        return repo.findAll();
+    }
+
+    @Override
+    public List<StockRecord> getByProduct(Long productId) {
         return repo.findByProductId(productId);
-    }
-
-    public List<StockRecord> getRecordsByWarehouse(Long warehouseId) {
-        return repo.findByWarehouseId(warehouseId);
     }
 }

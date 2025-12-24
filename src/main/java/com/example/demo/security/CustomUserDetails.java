@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
+import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
 
@@ -17,29 +17,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles()
-                .stream()
-                .map(role -> (GrantedAuthority) () -> role.name())
-                .collect(Collectors.toSet());
+        return Collections.emptyList();
     }
 
-    @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
-
-    @Override
-    public String getUsername() {
-        return user.getEmail();
-    }
-
-    public Long getId() {
-        return user.getId();
-    }
-
-    public User getUser() {
-        return user;
-    }
+    @Override public String getPassword() { return user.password; }
+    @Override public String getUsername() { return user.email; }
+    public Long getId() { return user.id; }
 
     @Override public boolean isAccountNonExpired() { return true; }
     @Override public boolean isAccountNonLocked() { return true; }
