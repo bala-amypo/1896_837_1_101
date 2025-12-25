@@ -6,20 +6,14 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "stock_records", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
-})
+@Table(name="stock_records", uniqueConstraints=@UniqueConstraint(columnNames={"product_id","warehouse_id"}))
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class StockRecord {
-
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne(optional = false)
-    private Product product;
-
-    @ManyToOne(optional = false)
-    private Warehouse warehouse;
+    @ManyToOne private Product product;
+    @ManyToOne private Warehouse warehouse;
 
     private Integer currentQuantity;
     private Integer reorderThreshold;

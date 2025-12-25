@@ -7,10 +7,9 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name="users")
 @Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class User {
-
     @Id @GeneratedValue
     private Long id;
 
@@ -18,7 +17,7 @@ public class User {
     private String email;
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(fetch=FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
