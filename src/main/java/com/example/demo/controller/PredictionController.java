@@ -13,20 +13,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PredictionController {
 
-    private final PredictionService service;
+    private final PredictionService predictionService;
 
     @GetMapping("/restock-date/{stockRecordId}")
     public LocalDate predict(@PathVariable Long stockRecordId) {
-        return service.predictRestockDate(stockRecordId);
+        return predictionService.predictRestockDate(stockRecordId);
     }
 
     @PostMapping("/rules")
     public PredictionRule createRule(@RequestBody PredictionRule rule) {
-        return service.createRule(rule);
+        return predictionService.createRule(rule);
     }
 
     @GetMapping("/rules")
-    public List<PredictionRule> getRules() {
-        return service.getAllRules();
+    public List<PredictionRule> getAll() {
+        return predictionService.getAllRules();
     }
 }

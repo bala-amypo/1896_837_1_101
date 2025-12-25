@@ -12,21 +12,21 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConsumptionLogController {
 
-    private final ConsumptionLogService service;
+    private final ConsumptionLogService consumptionLogService;
 
     @PostMapping("/{stockRecordId}")
     public ConsumptionLog log(@PathVariable Long stockRecordId,
                               @RequestBody ConsumptionLog log) {
-        return service.logConsumption(stockRecordId, log);
+        return consumptionLogService.logConsumption(stockRecordId, log);
     }
 
     @GetMapping("/record/{stockRecordId}")
     public List<ConsumptionLog> byRecord(@PathVariable Long stockRecordId) {
-        return service.getLogsByStockRecord(stockRecordId);
+        return consumptionLogService.getLogsByStockRecord(stockRecordId);
     }
 
     @GetMapping("/{id}")
     public ConsumptionLog get(@PathVariable Long id) {
-        return service.getLog(id);
+        return consumptionLogService.getLog(id);
     }
 }

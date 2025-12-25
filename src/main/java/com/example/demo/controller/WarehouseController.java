@@ -12,20 +12,20 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WarehouseController {
 
-    private final WarehouseService service;
+    private final WarehouseService warehouseService;
 
     @PostMapping
-    public Warehouse create(@RequestBody Warehouse w) {
-        return service.createWarehouse(w);
+    public Warehouse create(@RequestBody Warehouse warehouse) {
+        return warehouseService.createWarehouse(warehouse);
     }
 
     @GetMapping
     public List<Warehouse> getAll() {
-        return service.getAllWarehouses();
+        return warehouseService.getAllWarehouses();
     }
 
     @GetMapping("/{id}")
     public Warehouse get(@PathVariable Long id) {
-        return service.getWarehouse(id);
+        return warehouseService.getWarehouse(id);
     }
 }

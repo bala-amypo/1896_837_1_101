@@ -12,27 +12,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StockRecordController {
 
-    private final StockRecordService service;
+    private final StockRecordService stockRecordService;
 
     @PostMapping("/{productId}/{warehouseId}")
     public StockRecord create(@PathVariable Long productId,
                               @PathVariable Long warehouseId,
-                              @RequestBody StockRecord r) {
-        return service.createStockRecord(productId, warehouseId, r);
+                              @RequestBody StockRecord record) {
+        return stockRecordService.createStockRecord(productId, warehouseId, record);
     }
 
     @GetMapping("/{id}")
     public StockRecord get(@PathVariable Long id) {
-        return service.getStockRecord(id);
+        return stockRecordService.getStockRecord(id);
     }
 
     @GetMapping("/product/{productId}")
     public List<StockRecord> byProduct(@PathVariable Long productId) {
-        return service.getRecordsBy_product(productId);
+        return stockRecordService.getRecordsBy_product(productId);
     }
 
     @GetMapping("/warehouse/{warehouseId}")
     public List<StockRecord> byWarehouse(@PathVariable Long warehouseId) {
-        return service.getRecordsByWarehouse(warehouseId);
+        return stockRecordService.getRecordsByWarehouse(warehouseId);
     }
 }
