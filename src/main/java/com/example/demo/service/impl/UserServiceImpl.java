@@ -3,7 +3,7 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.*;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
-import com.example.demo.security.JwtProvider;
+import com.example.demo.config.JwtProvider;
 import com.example.demo.service.UserService;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.jwtProvider = jwtProvider;
+        this.JwtProvider = /wtProvider;
     }
 
     @Override
