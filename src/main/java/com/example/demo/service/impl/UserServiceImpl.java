@@ -4,7 +4,7 @@ import com.example.demo.dto.*;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.UserService;
-
+import com.example.demo.config.JwtProvider;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
