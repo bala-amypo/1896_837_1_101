@@ -1,29 +1,23 @@
-package com.example.demo.security;
-
-import com.example.demo.model.User;
-import com.example.demo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
-
-import java.util.stream.Collectors;
-
 @Service
-public class CustomUserDetails implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository repo;
+
+    public CustomUserDetailsService(UserRepository repo) {
+        this.repo = repo;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getEmail())
-                .password(user.getPassword())
-                .authorities(user.getRoles().stream().map(Enum::name).collect(Collectors.toList()))
-                .build();
+    public UserDetails loadUserByUsername(String email) {
+        User user = repo.findByEmail(email)
+            .orElseThrow(() -> new UsernameNotFoundException("Not found"));
+
+        return new org.springframework.security.core.userdetails.User(
+                user.getEmail(),
+                user.getPassword(),
+                user.getRoles().stream()
+                    .map(r -> new SimpleGrantedAuthority(r.getName()))
+                    .toList()
+        );
     }
 }
