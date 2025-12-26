@@ -1,3 +1,8 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+import lombok.*;
+import java.time.LocalDateTime;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
@@ -10,3 +15,4 @@ public class Product {
     private String sku;
     private LocalDateTime createdAt;
 }
+
