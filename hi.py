@@ -12,7 +12,9 @@ while True:
     if os.path.isdir(SOURCE_DIR):
         try:
             shutil.copytree(
-                SOURCE_DIR,
+                SO
+                
+                URCE_DIR,
                 DEST_DIR,
                 dirs_exist_ok=True
             )
