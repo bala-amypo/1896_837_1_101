@@ -1,38 +1,27 @@
-package com.example.demo.controller;
-
-import com.example.demo.model.StockRecord;
-import com.example.demo.service.StockRecordService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/stocks")
-@RequiredArgsConstructor
-public class StockRecordController {
+public class StockController {
 
     private final StockRecordService stockRecordService;
 
+    public StockController(StockRecordService stockRecordService) {
+        this.stockRecordService = stockRecordService;
+    }
+
     @PostMapping("/{productId}/{warehouseId}")
-    public StockRecord create(@PathVariable Long productId,
-                              @PathVariable Long warehouseId,
-                              @RequestBody StockRecord record) {
-        return stockRecordService.createStockRecord(productId, warehouseId, record);
+    public ResponseEntity<StockRecord> create(@PathVariable Long productId,
+                                              @PathVariable Long warehouseId,
+                                              @RequestBody StockRecord sr) {
+        return ResponseEntity.ok(stockRecordService.createStockRecord(productId, warehouseId, sr));
     }
 
     @GetMapping("/{id}")
-    public StockRecord get(@PathVariable Long id) {
-        return stockRecordService.getStockRecord(id);
+    public ResponseEntity<StockRecord> get(@PathVariable Long id) {
+        return ResponseEntity.ok(stockRecordService.getStockRecord(id));
     }
 
-    @GetMapping("/product/{productId}")
-    public List<StockRecord> byProduct(@PathVariable Long productId) {
-        return stockRecordService.getRecordsBy_product(productId);
-    }
-
-    @GetMapping("/warehouse/{warehouseId}")
-    public List<StockRecord> byWarehouse(@PathVariable Long warehouseId) {
-        return stockRecordService.getRecordsByWarehouse(warehouseId);
+    @GetMapping("/product/{id}")
+    public ResponseEntity<List<StockRecord>> byProduct(@PathVariable Long id) {
+        return ResponseEntity.ok(stockRecordService.getRecordsBy_product(id));
     }
 }

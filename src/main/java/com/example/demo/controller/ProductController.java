@@ -1,31 +1,25 @@
-package com.example.demo.controller;
-
-import com.example.demo.model.Product;
-import com.example.demo.service.ProductService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
-@RestController
+@RestController("productController")
 @RequestMapping("/api/products")
-@RequiredArgsConstructor
 public class ProductController {
 
     private final ProductService productService;
 
-    @PostMapping
-    public Product create(@RequestBody Product product) {
-        return productService.createProduct(product);
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
-    @GetMapping
-    public List<Product> getAll() {
-        return productService.getAllProducts();
+    @PostMapping
+    public ResponseEntity<Product> create(@RequestBody Product p) {
+        return ResponseEntity.ok(productService.createProduct(p));
     }
 
     @GetMapping("/{id}")
-    public Product get(@PathVariable Long id) {
-        return productService.getProduct(id);
+    public ResponseEntity<Product> get(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.getProduct(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Product>> all() {
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 }
