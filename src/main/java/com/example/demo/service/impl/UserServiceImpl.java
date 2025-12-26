@@ -3,8 +3,9 @@ package com.example.demo.service.impl;
 import com.example.demo.dto.*;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
+import com.example.demo.security.JwtProvider;
 import com.example.demo.service.UserService;
-import com.example.demo.config.JwtProvider;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(UserRegisterDto dto) {
+    public User register(UserRegisterDto dto) {
 
         Set<Role> roles = dto.getRoles().stream()
                 .map(roleName -> roleRepository.findByName(roleName)
@@ -45,7 +46,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
         user.setCreatedAt(LocalDateTime.now());
 
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Override
@@ -70,5 +71,11 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .roles(roleNames)
                 .build();
+    }
+
+    @Override
+    public User getByEmail(String email) {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
     }
 }
