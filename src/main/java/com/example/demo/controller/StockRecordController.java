@@ -15,7 +15,7 @@ public class StockRecordController {
 
     private final StockRecordService stockRecordService;
 
-    public StockController(StockRecordService stockRecordService) {
+    public StockRecordController(StockRecordService stockRecordService) {
         this.stockRecordService = stockRecordService;
     }
 

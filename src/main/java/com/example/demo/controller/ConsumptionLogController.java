@@ -14,7 +14,7 @@ public class ConsumptionLogController {
 
     private final ConsumptionLogService service;
 
-    public ConsumptionController(ConsumptionLogService service) {
+    public ConsumptionLogController(ConsumptionLogService service) {
         this.service = service;
     }
 
