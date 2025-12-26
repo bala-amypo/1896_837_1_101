@@ -6,10 +6,14 @@ import lombok.*;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-@Table(name="users")
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class User {
+    
+
     @Id @GeneratedValue
     private Long id;
 
