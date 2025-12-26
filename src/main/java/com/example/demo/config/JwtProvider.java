@@ -1,4 +1,4 @@
-package com.example.demo.config;
+package com.example.demo.config;  // or .security if moved
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -14,7 +14,7 @@ import java.util.Set;
 public class JwtProvider {
 
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
-    private final long expirationMs = 86400000; // 24 hours
+    private final long expirationMs = 86400000L; // 24 hours
 
     public String generateToken(String email, Long userId, Set<String> roles) {
         return Jwts.builder()
@@ -28,13 +28,21 @@ public class JwtProvider {
     }
 
     public String getEmailFromToken(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         return claims.getSubject();
     }
 
     public Long getUserId(String token) {
         try {
-            Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
             return claims.get("userId", Long.class);
         } catch (Exception e) {
             return null;
@@ -51,7 +59,11 @@ public class JwtProvider {
     }
 
     public Set<String> getRolesFromToken(String token) {
-        Claims claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
         return Set.copyOf(claims.get("roles", Set.class));
     }
 }
