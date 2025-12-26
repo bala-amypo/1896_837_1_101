@@ -1,51 +1,43 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.ConsumptionLog;
-import com.example.demo.model.StockRecord;
-import com.example.demo.repository.ConsumptionLogRepository;
-import com.example.demo.repository.StockRecordRepository;
+import com.example.demo.model.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.ConsumptionLogService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class ConsumptionLogServiceImpl implements ConsumptionLogService {
 
-    @Autowired
-    private StockRecordRepository stockRecordRepository;
+    private final ConsumptionLogRepository repo;
+    private final StockRecordRepository stockRepo;
 
-    @Autowired
-    private ConsumptionLogRepository consumptionLogRepository;
+    public ConsumptionLogServiceImpl(ConsumptionLogRepository repo, StockRecordRepository stockRepo) {
+        this.repo = repo;
+        this.stockRepo = stockRepo;
+    }
 
     @Override
     public ConsumptionLog logConsumption(Long stockRecordId, ConsumptionLog log) {
-        StockRecord stockRecord = stockRecordRepository.findById(stockRecordId)
+        StockRecord record = stockRepo.findById(stockRecordId)
                 .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
 
-        if (log.getConsumedQuantity() <= 0) {
-            throw new IllegalArgumentException("Consumed quantity must be greater than zero");
-        }
-
-        if (log.getConsumedDate().isAfter(LocalDate.now())) {
+        if (log.getConsumedDate() != null && log.getConsumedDate().isAfter(LocalDate.now()))
             throw new IllegalArgumentException("consumedDate cannot be future");
-        }
 
-        log.setStockRecord(stockRecord);
-        return consumptionLogRepository.save(log);
+        log.setStockRecord(record);
+        return repo.save(log);
     }
 
     @Override
     public List<ConsumptionLog> getLogsByStockRecord(Long stockRecordId) {
-        return consumptionLogRepository.findByStockRecordId(stockRecordId);
+        return repo.findByStockRecordId(stockRecordId);
     }
 
     @Override
     public ConsumptionLog getLog(Long id) {
-        return consumptionLogRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("ConsumptionLog not found"));
+        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("ConsumptionLog not found"));
     }
 }
