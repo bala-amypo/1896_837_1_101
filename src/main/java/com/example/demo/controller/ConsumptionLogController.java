@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
 @RequestMapping("/api/consumption")
-public class ConsumptionController {
+public class ConsumptionLogController {
 
     private final ConsumptionLogService service;
 
