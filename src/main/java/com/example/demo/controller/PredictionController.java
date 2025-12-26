@@ -2,9 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.PredictionRule;
 import com.example.demo.service.PredictionService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,21 +10,24 @@ import java.util.List;
 @RequestMapping("/api/predict")
 public class PredictionController {
 
-    @Autowired
-    private PredictionService predictionService;
+    private final PredictionService service;
+
+    public PredictionController(PredictionService service) {
+        this.service = service;
+    }
 
     @GetMapping("/restock-date/{stockRecordId}")
-    public LocalDate predictRestockDate(@PathVariable Long stockRecordId) {
-        return predictionService.predictRestockDate(stockRecordId);
+    public LocalDate predict(@PathVariable Long stockRecordId) {
+        return service.predictRestockDate(stockRecordId);
     }
 
     @PostMapping("/rules")
     public PredictionRule createRule(@RequestBody PredictionRule rule) {
-        return predictionService.createRule(rule);
+        return service.createRule(rule);
     }
 
     @GetMapping("/rules")
-    public List<PredictionRule> getAllRules() {
-        return predictionService.getAllRules();
+    public List<PredictionRule> getRules() {
+        return service.getAllRules();
     }
 }
