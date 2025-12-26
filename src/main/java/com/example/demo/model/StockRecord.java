@@ -1,21 +1,17 @@
-package com.example.demo.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-import java.time.LocalDateTime;
-
 @Entity
-@Getter @Setter @Builder
-@NoArgsConstructor @AllArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"product_id","warehouse_id"}))
+@Getter @Setter
+@NoArgsConstructor
 public class StockRecord {
+
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne private Product product;
-    @ManyToOne private Warehouse warehouse;
+    @ManyToOne
+    private Product product;
 
-    private Integer currentQuantity;
-    private Integer reorderThreshold;
+    @ManyToOne
+    private Warehouse warehouse;
+
+    private Integer quantity;
     private LocalDateTime lastUpdated;
 }
