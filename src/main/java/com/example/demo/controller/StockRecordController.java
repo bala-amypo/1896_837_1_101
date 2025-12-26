@@ -1,38 +1,38 @@
 package com.example.demo.controller;
 
-import org.springframework.http.ResponseEntity;
-import java.util.Map;
-
 import com.example.demo.model.StockRecord;
 import com.example.demo.service.StockRecordService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/stocks")
 public class StockRecordController {
 
-    private final StockRecordService stockRecordService;
-
-    public StockRecordController(StockRecordService stockRecordService) {
-        this.stockRecordService = stockRecordService;
-    }
+    @Autowired
+    private StockRecordService stockRecordService;
 
     @PostMapping("/{productId}/{warehouseId}")
-    public ResponseEntity<StockRecord> create(@PathVariable Long productId,
-                                              @PathVariable Long warehouseId,
-                                              @RequestBody StockRecord sr) {
-        return ResponseEntity.ok(stockRecordService.createStockRecord(productId, warehouseId, sr));
+    public StockRecord createStockRecord(@PathVariable Long productId,
+                                         @PathVariable Long warehouseId,
+                                         @RequestBody StockRecord record) {
+        return stockRecordService.createStockRecord(productId, warehouseId, record);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StockRecord> get(@PathVariable Long id) {
-        return ResponseEntity.ok(stockRecordService.getStockRecord(id));
+    public StockRecord getStockRecord(@PathVariable Long id) {
+        return stockRecordService.getStockRecord(id);
     }
 
-    @GetMapping("/product/{id}")
-    public ResponseEntity<List<StockRecord>> byProduct(@PathVariable Long id) {
-        return ResponseEntity.ok(stockRecordService.getRecordsBy_product(id));
+    @GetMapping("/product/{productId}")
+    public List<StockRecord> getRecordsByProduct(@PathVariable Long productId) {
+        return stockRecordService.getRecordsBy_product(productId);
+    }
+
+    @GetMapping("/warehouse/{warehouseId}")
+    public List<StockRecord> getRecordsByWarehouse(@PathVariable Long warehouseId) {
+        return stockRecordService.getRecordsByWarehouse(warehouseId);
     }
 }

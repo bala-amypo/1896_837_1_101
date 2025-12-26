@@ -1,35 +1,31 @@
 package com.example.demo.controller;
-import org.springframework.http.ResponseEntity;
-import java.util.Map;
 
 import com.example.demo.model.Product;
 import com.example.demo.service.ProductService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@RestController("productController")
+
+@RestController
 @RequestMapping("/api/products")
 public class ProductController {
 
-    private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+    @Autowired
+    private ProductService productService;
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product p) {
-        return ResponseEntity.ok(productService.createProduct(p));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Product> get(@PathVariable Long id) {
-        return ResponseEntity.ok(productService.getProduct(id));
+    public Product createProduct(@RequestBody Product product) {
+        return productService.createProduct(product);
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> all() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
+
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable Long id) {
+        return productService.getProduct(id);
     }
 }

@@ -1,31 +1,31 @@
 package com.example.demo.controller;
-import org.springframework.http.ResponseEntity;
-import java.util.Map;
-
 
 import com.example.demo.model.Warehouse;
 import com.example.demo.service.WarehouseService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-@RestController("warehouseController")
+
+@RestController
 @RequestMapping("/api/warehouses")
 public class WarehouseController {
 
-    private final WarehouseService warehouseService;
-
-    public WarehouseController(WarehouseService warehouseService) {
-        this.warehouseService = warehouseService;
-    }
+    @Autowired
+    private WarehouseService warehouseService;
 
     @PostMapping
-    public ResponseEntity<Warehouse> create(@RequestBody Warehouse w) {
-        return ResponseEntity.ok(warehouseService.createWarehouse(w));
+    public Warehouse createWarehouse(@RequestBody Warehouse warehouse) {
+        return warehouseService.createWarehouse(warehouse);
+    }
+
+    @GetMapping
+    public List<Warehouse> getAllWarehouses() {
+        return warehouseService.getAllWarehouses();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Warehouse> get(@PathVariable Long id) {
-        return ResponseEntity.ok(warehouseService.getWarehouse(id));
+    public Warehouse getWarehouse(@PathVariable Long id) {
+        return warehouseService.getWarehouse(id);
     }
 }
