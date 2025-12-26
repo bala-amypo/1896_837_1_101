@@ -1,3 +1,11 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.StockRecord;
+import com.example.demo.service.StockRecordService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 @RestController
 @RequestMapping("/api/stocks")
 public class StockController {

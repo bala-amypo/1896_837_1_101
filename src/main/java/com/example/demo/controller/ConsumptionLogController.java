@@ -1,3 +1,11 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.ConsumptionLog;
+import com.example.demo.service.ConsumptionLogService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 @RestController
 @RequestMapping("/api/consumption")
 public class ConsumptionController {

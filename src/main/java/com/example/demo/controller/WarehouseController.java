@@ -1,3 +1,11 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Warehouse;
+import com.example.demo.service.WarehouseService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 @RestController("warehouseController")
 @RequestMapping("/api/warehouses")
 public class WarehouseController {
