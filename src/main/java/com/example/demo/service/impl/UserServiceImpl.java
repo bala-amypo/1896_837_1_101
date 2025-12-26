@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.JwtProvider = /wtProvider;
+        this.JwtProvider =JwtProvider;
     }
 
     @Override
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
                 .map(Role::getName)
                 .collect(Collectors.toSet());
 
-        String token = jwtProvider.generateToken(user.getEmail(), user.getId(), roleNames);
+        String token = JwtProvider.generateToken(user.getEmail(), user.getId(), roleNames);
 
         return AuthResponse.builder()
                 .token(token)
