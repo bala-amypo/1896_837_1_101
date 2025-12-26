@@ -1,5 +1,5 @@
 @Service
-public class CustomUserDetailsService implements UserDetailsService {
+public class CustomUserDetails implements UserDetailsService {
 
     private final UserRepository repo;
 
@@ -12,12 +12,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         User user = repo.findByEmail(email)
             .orElseThrow(() -> new UsernameNotFoundException("Not found"));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                user.getRoles().stream()
-                    .map(r -> new SimpleGrantedAuthority(r.getName()))
-                    .toList()
-        );
+       return org.springframework.security.core.userdetails.User.builder()
+        .username(user.getEmail())
+        .password(user.getPassword())
+        .authorities(
+            user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .toList()
+        )
+        .build();
+
     }
 }
