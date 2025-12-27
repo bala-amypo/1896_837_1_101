@@ -6,9 +6,9 @@ import com.example.demo.model.StockRecord;
 import com.example.demo.repository.ConsumptionLogRepository;
 import com.example.demo.repository.StockRecordRepository;
 import com.example.demo.service.ConsumptionLogService;
+import com.example.demo.util.DateUtil; // Import DateUtil
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,28 +20,31 @@ public class ConsumptionLogServiceImpl implements ConsumptionLogService {
     @Override
     public ConsumptionLog logConsumption(Long stockRecordId, ConsumptionLog log) {
         StockRecord sr = stockRepo.findById(stockRecordId)
-                .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found")); [cite_start]// [cite: 190]
         
-        if (log.getConsumedDate() != null && log.getConsumedDate().isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("consumedDate cannot be future");
+        // Use DateUtil as per requirements
+        if (DateUtil.isFuture(log.getConsumedDate())) {
+            throw new IllegalArgumentException("consumedDate cannot be future"); [cite_start]// [cite: 59, 146]
         }
         
         log.setStockRecord(sr);
-        // Optional: Update stock quantity logic
+        
+        // Update stock quantity logic (ensure it doesn't drop below 0)
         int newQty = Math.max(0, sr.getCurrentQuantity() - log.getConsumedQuantity());
         sr.setCurrentQuantity(newQty);
         stockRepo.save(sr);
         
-        return repo.save(log);
+        return repo.save(log); [cite_start]// [cite: 193]
     }
 
     @Override
     public List<ConsumptionLog> getLogsByStockRecord(Long stockRecordId) {
-        return repo.findByStockRecordId(stockRecordId);
+        return repo.findByStockRecordId(stockRecordId); [cite_start]// [cite: 194]
     }
 
     @Override
     public ConsumptionLog getLog(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("ConsumptionLog not found"));
+        return repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("ConsumptionLog not found")); [cite_start]// [cite: 195]
     }
 }
