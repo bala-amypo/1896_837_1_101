@@ -6,14 +6,22 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "products")
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    
     private String productName;
+    
     @Column(unique = true)
     private String sku;
+    
     private String category;
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() { createdAt = LocalDateTime.now(); }
 }

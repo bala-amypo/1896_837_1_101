@@ -4,38 +4,28 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
 import com.example.demo.service.StockRecordService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class StockRecordServiceImpl implements StockRecordService {
-
     private final StockRecordRepository repo;
     private final ProductRepository productRepo;
     private final WarehouseRepository warehouseRepo;
 
-    public StockRecordServiceImpl(StockRecordRepository repo,
-                                  ProductRepository productRepo,
-                                  WarehouseRepository warehouseRepo) {
-        this.repo = repo;
-        this.productRepo = productRepo;
-        this.warehouseRepo = warehouseRepo;
-    }
-
     @Override
     public StockRecord createStockRecord(Long productId, Long warehouseId, StockRecord record) {
-        Product product = productRepo.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Warehouse warehouse = warehouseRepo.findById(warehouseId)
-                .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
-
-        if (!repo.findByProductId(productId).isEmpty())
+        Product p = productRepo.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        Warehouse w = warehouseRepo.findById(warehouseId).orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
+        
+        if(repo.findByProductIdAndWarehouseId(productId, warehouseId).isPresent()) {
             throw new IllegalArgumentException("StockRecord already exists");
-
-        record.setProduct(product);
-        record.setWarehouse(warehouse);
-        record.setLastUpdated(LocalDateTime.now());
+        }
+        
+        record.setProduct(p);
+        record.setWarehouse(w);
         return repo.save(record);
     }
 
@@ -45,7 +35,7 @@ public class StockRecordServiceImpl implements StockRecordService {
     }
 
     @Override
-    public List<StockRecord> getRecordsBy_product(Long productId) {
+    public List<StockRecord> getRecordsBy_product(Long productId) { // Note underscore
         return repo.findByProductId(productId);
     }
 

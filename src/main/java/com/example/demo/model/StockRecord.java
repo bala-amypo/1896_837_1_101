@@ -8,18 +8,24 @@ import java.time.LocalDateTime;
 @Table(name = "stock_records", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"product_id", "warehouse_id"})
 })
-@Data @Builder @NoArgsConstructor @AllArgsConstructor
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StockRecord {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @ManyToOne @JoinColumn(name = "product_id")
+    @ManyToOne
     private Product product;
     
-    @ManyToOne @JoinColumn(name = "warehouse_id")
+    @ManyToOne
     private Warehouse warehouse;
     
     private Integer currentQuantity;
     private Integer reorderThreshold;
     private LocalDateTime lastUpdated;
+
+    @PrePersist
+    public void onCreate() { lastUpdated = LocalDateTime.now(); }
 }

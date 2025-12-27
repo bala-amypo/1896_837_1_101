@@ -1,24 +1,52 @@
-package com.example.demo.config;
+package com.example.demo.config; // Test expects this in config package or mocked as such
 
+import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import java.util.Set;
+import java.security.Key;
+import java.util.*;
 
 @Component
 public class JwtProvider {
+    @Value("${jwt.secret}")
+    private String secret;
+    @Value("${jwt.expiration}")
+    private long expiration;
+
+    private Key getSignKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes());
+    }
 
     public String generateToken(String email, Long userId, Set<String> roles) {
-        return "fake.jwt.token";
+        return Jwts.builder()
+                .setSubject(email)
+                .claim("userId", userId)
+                .claim("roles", roles)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     public boolean validateToken(String token) {
-        return true;
+        try {
+            Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) { return false; }
     }
 
     public String getEmailFromToken(String token) {
-        return null;
+        return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody().getSubject();
     }
-
+    
     public Long getUserId(String token) {
-        return null;
+        try {
+            return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody().get("userId", Long.class);
+        } catch(Exception e) { return null; }
+    }
+    
+    public List<String> getRolesFromToken(String token) {
+         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody().get("roles", List.class);
     }
 }

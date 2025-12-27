@@ -4,25 +4,19 @@ import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import com.example.demo.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-
     private final ProductRepository repo;
-
-    public ProductServiceImpl(ProductRepository repo) {
-        this.repo = repo;
-    }
 
     @Override
     public Product createProduct(Product product) {
-        if (product.getProductName() == null || product.getProductName().isBlank())
-            throw new IllegalArgumentException("productName cannot be empty");
-        repo.findBySku(product.getSku()).ifPresent(p -> { throw new IllegalArgumentException("SKU exists"); });
-        product.setCreatedAt(LocalDateTime.now());
+        if (product.getProductName() == null || product.getProductName().isEmpty()) throw new IllegalArgumentException("Name required");
+        if (repo.findBySku(product.getSku()).isPresent()) throw new IllegalArgumentException("Duplicate SKU");
         return repo.save(product);
     }
 
@@ -32,7 +26,5 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return repo.findAll();
-    }
+    public List<Product> getAllProducts() { return repo.findAll(); }
 }
