@@ -1,4 +1,3 @@
-
 package com.example.demo.model;
 
 import jakarta.persistence.*;
@@ -7,19 +6,28 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Table(name = "users")
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
-
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private String name;
+    
+    @Column(unique = true)
     private String email;
+    
     private String password;
-
-    @ManyToMany(fetch = FetchType.EAGER)
+    
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles;
-
+    
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() { createdAt = LocalDateTime.now(); }
 }

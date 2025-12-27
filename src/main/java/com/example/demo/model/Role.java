@@ -1,12 +1,4 @@
 package com.example.demo.model;
-
-import jakarta.persistence.*;
-import lombok.*;
-@Entity
-@Getter @Setter
-public class Role {
-    @Id @GeneratedValue
-    private Long id;
-    private String name;
+public enum Role {
+    ROLE_USER, ROLE_ADMIN
 }
-
