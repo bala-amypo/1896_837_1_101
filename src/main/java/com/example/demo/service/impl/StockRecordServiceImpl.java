@@ -17,13 +17,15 @@ public class StockRecordServiceImpl implements StockRecordService {
 
     @Override
     public StockRecord createStockRecord(Long productId, Long warehouseId, StockRecord record) {
-        Product p = productRepo.findById(productId).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
-        Warehouse w = warehouseRepo.findById(warehouseId).orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
-        
-        if(repo.findByProductIdAndWarehouseId(productId, warehouseId).isPresent()) {
+        Product p = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        Warehouse w = warehouseRepo.findById(warehouseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Warehouse not found"));
+
+        if (repo.findByProductIdAndWarehouseId(productId, warehouseId).isPresent()) {
             throw new IllegalArgumentException("StockRecord already exists");
         }
-        
+
         record.setProduct(p);
         record.setWarehouse(w);
         return repo.save(record);
@@ -35,7 +37,7 @@ public class StockRecordServiceImpl implements StockRecordService {
     }
 
     @Override
-    public List<StockRecord> getRecordsBy_product(Long productId) { // Note underscore
+    public List<StockRecord> getRecordsBy_product(Long productId) {
         return repo.findByProductId(productId);
     }
 

@@ -1,8 +1,10 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.exception.ResourceNotFoundException;
-import com.example.demo.model.*;
-import com.example.demo.repository.*;
+import com.example.demo.model.ConsumptionLog;
+import com.example.demo.model.StockRecord;
+import com.example.demo.repository.ConsumptionLogRepository;
+import com.example.demo.repository.StockRecordRepository;
 import com.example.demo.service.ConsumptionLogService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,14 +19,19 @@ public class ConsumptionLogServiceImpl implements ConsumptionLogService {
 
     @Override
     public ConsumptionLog logConsumption(Long stockRecordId, ConsumptionLog log) {
-        StockRecord sr = stockRepo.findById(stockRecordId).orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
-        if(log.getConsumedDate().isAfter(LocalDate.now())) {
+        StockRecord sr = stockRepo.findById(stockRecordId)
+                .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found"));
+        
+        if (log.getConsumedDate() != null && log.getConsumedDate().isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("consumedDate cannot be future");
         }
+        
         log.setStockRecord(sr);
-        // Logic to reduce stock could be here
-        sr.setCurrentQuantity(Math.max(0, sr.getCurrentQuantity() - log.getConsumedQuantity()));
+        // Optional: Update stock quantity logic
+        int newQty = Math.max(0, sr.getCurrentQuantity() - log.getConsumedQuantity());
+        sr.setCurrentQuantity(newQty);
         stockRepo.save(sr);
+        
         return repo.save(log);
     }
 
@@ -35,6 +42,6 @@ public class ConsumptionLogServiceImpl implements ConsumptionLogService {
 
     @Override
     public ConsumptionLog getLog(Long id) {
-        return repo.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("ConsumptionLog not found"));
     }
 }

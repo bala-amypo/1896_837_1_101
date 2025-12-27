@@ -11,20 +11,22 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
-    private final ProductRepository repo;
+    private final ProductRepository repository;
 
     @Override
     public Product createProduct(Product product) {
-        if (product.getProductName() == null || product.getProductName().isEmpty()) throw new IllegalArgumentException("Name required");
-        if (repo.findBySku(product.getSku()).isPresent()) throw new IllegalArgumentException("Duplicate SKU");
-        return repo.save(product);
+        if (product.getProductName() == null || product.getProductName().isEmpty()) 
+            throw new IllegalArgumentException("Name required");
+        if (repository.findBySku(product.getSku()).isPresent()) 
+            throw new IllegalArgumentException("Duplicate SKU");
+        return repository.save(product);
     }
 
     @Override
     public Product getProduct(Long id) {
-        return repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
-    public List<Product> getAllProducts() { return repo.findAll(); }
+    public List<Product> getAllProducts() { return repository.findAll(); }
 }
