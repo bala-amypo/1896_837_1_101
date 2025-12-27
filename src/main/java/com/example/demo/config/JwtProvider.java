@@ -1,4 +1,4 @@
-package com.example.demo.config; // Test expects this in config package or mocked as such
+package com.example.demo.config; // Placing in config as requested by test MockBean path
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
@@ -11,6 +11,7 @@ import java.util.*;
 public class JwtProvider {
     @Value("${jwt.secret}")
     private String secret;
+    
     @Value("${jwt.expiration}")
     private long expiration;
 
@@ -43,10 +44,6 @@ public class JwtProvider {
     public Long getUserId(String token) {
         try {
             return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody().get("userId", Long.class);
-        } catch(Exception e) { return null; }
-    }
-    
-    public List<String> getRolesFromToken(String token) {
-         return Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token).getBody().get("roles", List.class);
+        } catch (Exception e) { return null; }
     }
 }
