@@ -34,12 +34,12 @@ public class ConsumptionLogServiceImpl implements ConsumptionLogService {
         sr.setCurrentQuantity(newQty);
         stockRepo.save(sr);
         
-        return repo.save(log); [cite_start]// [cite: 193]
+        return repo.save(log);
     }
 
     @Override
     public List<ConsumptionLog> getLogsByStockRecord(Long stockRecordId) {
-        return repo.findByStockRecordId(stockRecordId); [cite_start]// [cite: 194]
+        return repo.findByStockRecordId(stockRecordId);
     }
 
     @Override
