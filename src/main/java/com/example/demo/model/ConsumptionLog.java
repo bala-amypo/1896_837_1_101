@@ -5,7 +5,6 @@ import lombok.*;
 import java.time.LocalDate;
 @Entity
 @Getter @Setter
-@Builder
 @NoArgsConstructor
 public class ConsumptionLog {
 
