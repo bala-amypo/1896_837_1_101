@@ -20,11 +20,11 @@ public class ConsumptionLogServiceImpl implements ConsumptionLogService {
     @Override
     public ConsumptionLog logConsumption(Long stockRecordId, ConsumptionLog log) {
         StockRecord sr = stockRepo.findById(stockRecordId)
-                .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found")); [cite_start]// [cite: 190]
+                .orElseThrow(() -> new ResourceNotFoundException("StockRecord not found")); 
         
         // Use DateUtil as per requirements
         if (DateUtil.isFuture(log.getConsumedDate())) {
-            throw new IllegalArgumentException("consumedDate cannot be future"); [cite_start]// [cite: 59, 146]
+            throw new IllegalArgumentException("consumedDate cannot be future"); 
         }
         
         log.setStockRecord(sr);
@@ -45,6 +45,6 @@ public class ConsumptionLogServiceImpl implements ConsumptionLogService {
     @Override
     public ConsumptionLog getLog(Long id) {
         return repo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("ConsumptionLog not found")); [cite_start]// [cite: 195]
+                .orElseThrow(() -> new ResourceNotFoundException("ConsumptionLog not found"));
     }
 }
